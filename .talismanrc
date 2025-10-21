@@ -1,0 +1,8 @@
+fileignoreconfig:
+- filename: README.md
+  checksum: 8a6079a8d677f0f22138839a83bfd50eca74e53320266c16e9fa3bc70a348480
+- filename: melodie/index.ts
+  checksum: 0ec95f6af6138d1288c652da77b1f69460f7436dbd3fecadb66de177de2c2fc2
+- filename: LICENSE
+  checksum: 00de5fa1aad2fcb968beb5d1bbf09931fc9d3f160f11b945b24f3203ea025917
+version: "1.0"
