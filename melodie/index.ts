@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
+
 const stack = pulumi.getStack();
 const project = pulumi.getProject();
 const config = new pulumi.Config("shonry27");
