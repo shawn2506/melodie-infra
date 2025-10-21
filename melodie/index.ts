@@ -192,7 +192,7 @@ new aws.iam.RolePolicy("taskSsmReadPolicy", {
           "ssm:GetParameter",
           "ssm:DescribeParameters",
         ],
-        Resource: "arn:aws:ssm:ap-south-1:865742897250:parameter/melodie/*",
+        Resource: `arn:aws:ssm:${region}:865742897250:parameter/melodie/*`,
       },
     ],
   },
@@ -212,7 +212,7 @@ new aws.iam.RolePolicy("taskExecSsmReadPolicy", {
           "ssm:GetParameter",
           "ssm:DescribeParameters",
         ],
-        Resource: "arn:aws:ssm:ap-south-1:865742897250:parameter/melodie/*",
+        Resource: `arn:aws:ssm:${region}:865742897250:parameter/melodie/*`,
       },
     ],
   },
@@ -238,7 +238,7 @@ const taskDefinition = new aws.ecs.TaskDefinition("myTaskDefinition", {
     {
       name: "consultation-cnt",
       image:
-        "865742897250.dkr.ecr.ap-south-1.amazonaws.com/consultation-app:latest", // Replace with your own image
+        `865742897250.dkr.ecr.${region}.amazonaws.com/consultation-app:latest`, // Replace with your own image
       essential: true,
       portMappings: [
         {
@@ -251,17 +251,17 @@ const taskDefinition = new aws.ecs.TaskDefinition("myTaskDefinition", {
         {
           name: "CLERK_JWKS_URL",
           valueFrom:
-            "arn:aws:ssm:ap-south-1:865742897250:parameter/melodie/CLERK_JWKS_URL", // use actual ARN
+            `arn:aws:ssm:${region}:865742897250:parameter/melodie/CLERK_JWKS_URL`, // use actual ARN
         },
         {
           name: "CLERK_SECRET_KEY",
           valueFrom:
-            "arn:aws:ssm:ap-south-1:865742897250:parameter/melodie/CLERK_SECRET_KEY", // use actual ARN
+            `arn:aws:ssm:${region}:865742897250:parameter/melodie/CLERK_SECRET_KEY`, // use actual ARN
         },
         {
           name: "OPENAI_API_KEY",
           valueFrom:
-            "arn:aws:ssm:ap-south-1:865742897250:parameter/melodie/OPENAI_API_KEY", // use actual ARN
+            `arn:aws:ssm:${region}:865742897250:parameter/melodie/OPENAI_API_KEY`, // use actual ARN
         },
       ],
     },
