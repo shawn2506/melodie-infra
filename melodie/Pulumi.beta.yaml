@@ -1,0 +1,11 @@
+config:
+  aws:region: ap-south-1
+  shonry27:vpcCidr: 10.28.0.0/16
+  shonry27:enableNatGateway: "false"
+  shonry27:publicSubnetCidrs:
+    - 10.28.1.0/24
+    - 10.28.2.0/24
+  shonry27:privateSubnetCidrs:
+    - 10.28.11.0/24
+    - 10.28.12.0/24
+  aws:profile: aiadmin
