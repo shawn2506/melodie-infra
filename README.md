@@ -2,7 +2,7 @@
 
  A minimal Pulumi template for provisioning AWS infrastructure using TypeScript. This template creates an Amazon S3 bucket and exports its name.
 
- ## Prerequisites
+ ## Prerequisites 
 
  - Pulumi CLI (>= v3): https://www.pulumi.com/docs/get-started/install/
  - Node.js (>= 14): https://nodejs.org/
