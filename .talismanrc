@@ -4,5 +4,5 @@ fileignoreconfig:
 - filename: melodie/index.ts
   checksum: df6af0acebd95392f2d67992c03d8bb683f1d1f88ba02a7b31630f781b99c359
 - filename: LICENSE
-  checksum: 00de5fa1aad2fcb968beb5d1bbf09931fc9d3f160f11b945b24f3203ea025917
+  checksum: 43263209c42091409c46140c7ea67b1127697b602f65d9be5040533edb9e365f
 version: "1.0"
