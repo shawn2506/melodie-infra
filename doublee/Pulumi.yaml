@@ -1,0 +1,10 @@
+name: doublee
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: network module for doublee infra
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: https://www.pulumi.com/ai/api/project/d7fe0822-b657-4d7f-a788-3cffc067dc78.zip
