@@ -295,3 +295,5 @@ export const clusterName = cluster.name;
 export const instanceId = ecsInstance.id;
 export const publicIp = ecsInstance.publicIp;
 export const taskDefinitionArn = taskDefinition.arn;
+
+// Triggering Build
