@@ -81,13 +81,13 @@ const sg = new aws.ec2.SecurityGroup("secGrp", {
       protocol: "tcp",
       fromPort: 22,
       toPort: 22,
-      cidrBlocks: ["103.87.31.129/32"],
+      cidrBlocks: ["103.87.31.191/32"],
     },
     {
       protocol: "tcp",
-      fromPort: 8000,
-      toPort: 8000,
-      cidrBlocks: ["103.87.31.129/32"],
+      fromPort: 8080,
+      toPort: 8080,
+      cidrBlocks: ["103.87.31.191/32"],
     },
   ],
   egress: [
@@ -193,7 +193,7 @@ new aws.iam.RolePolicy("taskSsmReadPolicy", {
           "ssm:GetParameter",
           "ssm:DescribeParameters",
         ],
-        Resource: `arn:aws:ssm:${region}:865742897250:parameter/melodie/*`,
+        Resource: `arn:aws:ssm:${region}:865742897250:parameter/doublee/*`,
       },
     ],
   },
@@ -213,7 +213,7 @@ new aws.iam.RolePolicy("taskExecSsmReadPolicy", {
           "ssm:GetParameter",
           "ssm:DescribeParameters",
         ],
-        Resource: `arn:aws:ssm:${region}:865742897250:parameter/melodie/*`,
+        Resource: `arn:aws:ssm:${region}:865742897250:parameter/doublee/*`,
       },
     ],
   },
@@ -226,67 +226,59 @@ new aws.iam.RolePolicyAttachment("taskRolePolicyAttach", {
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
 });
 
+// --- CloudWatch Logs group for ECS ---
+const logGroup = new aws.cloudwatch.LogGroup("ecsDoubleeLogGroup", {
+  name: "/ecs/doublee",
+  retentionInDays: 7,
+});
+
 // Create the ECS Task Definition
 const taskDefinition = new aws.ecs.TaskDefinition("myTaskDefinition", {
-  family: "consultation",
+  family: "doublee",
   cpu: "256",
   memory: "512",
   networkMode: "bridge",
   requiresCompatibilities: ["EC2"],
   executionRoleArn: taskExecutionRole.arn,
-  taskRoleArn: taskRole.arn,
-  containerDefinitions: JSON.stringify([
+  containerDefinitions: pulumi.interpolate`[
     {
-      name: "consultation-cnt",
-      image:
-        `865742897250.dkr.ecr.${region}.amazonaws.com/consultation-app:latest`, // Replace with your own image
-      essential: true,
-      portMappings: [
-        {
-          containerPort: 8000,
-          hostPort: 8000,
-          protocol: "tcp",
-        },
+      "name": "doublee-cnt",
+      "image": "865742897250.dkr.ecr.${region}.amazonaws.com/doublee:0.02",
+      "essential": true,
+      "portMappings": [
+        { "containerPort": 8080, "hostPort": 8080, "protocol": "tcp" }
       ],
-      secrets: [
-        {
-          name: "CLERK_JWKS_URL",
-          valueFrom:
-            `arn:aws:ssm:${region}:865742897250:parameter/melodie/CLERK_JWKS_URL`, // use actual ARN
-        },
-        {
-          name: "CLERK_SECRET_KEY",
-          valueFrom:
-            `arn:aws:ssm:${region}:865742897250:parameter/melodie/CLERK_SECRET_KEY`, // use actual ARN
-        },
-        {
-          name: "OPENAI_API_KEY",
-          valueFrom:
-            `arn:aws:ssm:${region}:865742897250:parameter/melodie/OPENAI_API_KEY`, // use actual ARN
-        },
-      ],
-    },
-  ]),
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "${logGroup.name}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]`,
 });
 
-// // ECS Fargate Service
-// const service = new aws.ecs.Service(
-//   "app-service",
-//   {
-//     name: `${project}-${stack}-ecs-app`,
-//     cluster: cluster.arn,
-//     taskDefinition: taskDefinition.arn,
-//     desiredCount: 1,
-//     enableEcsManagedTags: true,
-//     launchType: "EC2",
-//     networkConfiguration: {
-//       subnets: [publicSubnets[0].id],
-//       assignPublicIp: false,
-//       securityGroups: [sg.id],
-//     },
-//   },
-//   { dependsOn: [taskDefinition] },
-// );
+// ECS Fargate Service
+const service = new aws.ecs.Service(
+  "app-service",
+  {
+    name: `${project}-${stack}-ecs-app`,
+    cluster: cluster.arn,
+    taskDefinition: taskDefinition.arn,
+    desiredCount: 1,
+    enableEcsManagedTags: true,
+    launchType: "EC2",
+    networkConfiguration: {
+      subnets: [publicSubnets[0].id],
+      assignPublicIp: false,
+      securityGroups: [sg.id],
+    },
+  },
+  { dependsOn: [taskDefinition] },
+);
+
 
 // Exports
 export const awsRegion = region;
@@ -295,5 +287,3 @@ export const clusterName = cluster.name;
 export const instanceId = ecsInstance.id;
 export const publicIp = ecsInstance.publicIp;
 export const taskDefinitionArn = taskDefinition.arn;
-
-// Triggering Build

@@ -1,0 +1,14 @@
+{
+  "name": "doublee",
+  "description": "network module for doublee infra",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "@pulumi/aws": "6.13.3",
+    "@pulumi/awsx": "^3.0.0",
+    "@pulumi/pulumi": "*"
+  }
+}
